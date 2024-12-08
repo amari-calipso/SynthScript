@@ -23,7 +23,7 @@ new float MAX_AMP              = 512,
           NOTE_DURATION        = 1,
           MAX_INSTRUMENT_VALUE = 512,
           MIN_NOTE_DURATION    = 0.05,
-          BEND_OCTAVES         = 1 / 6; 
+          BEND_OCTAVES         = 1 / 6;
 
 main {
     new bool usingCupy;
@@ -74,7 +74,7 @@ new class Synth {
 
     new method __init__() {
         this.playing = {};
-    
+
         this.mode = Synth.RENDER;
 
         this.eventList = None;
@@ -167,7 +167,7 @@ new class Synth {
             } else {
                 Thread(target = __play).start();
             }
-        } 
+        }
     }
 
     new method __addTime(time) {
@@ -242,15 +242,15 @@ new class Synth {
             if frequency[1] == channel {
                 for i in range(len(this.playing[frequency])) {
                     new dynamic new_ = frequency[0] * (2 ** (BEND_OCTAVES * (amount / 8192))), sound, ch;
-                    
+
                     if this.mode in (Synth.EXPORT, Synth.RENDER) {
                         this.eventList.append([
-                            Synth.EventType.NOTE, new_, channel, this.eventList[this.playing[frequency][i]][3], 
+                            Synth.EventType.NOTE, new_, channel, this.eventList[this.playing[frequency][i]][3],
                             this.eventList[this.playing[frequency][i]][4], 0, this.__time
                         ]);
 
                         this.playing[frequency][i] = len(this.eventList) - 1;
-                        
+
                         this.__addTime(delay);
                         this.__time += delay;
                     } else {
@@ -261,7 +261,7 @@ new class Synth {
                         if usingCupy {
                             wave = wave.get();
                         }
-                        
+
                         sound = sndarray.make_sound(wave);
 
                         ch = this.channels[channel][this.playing[frequency][i][0]];
@@ -298,7 +298,7 @@ new class Synth {
 
     new method render(source) {
         global FREQUENCY_SAMPLE;
-        
+
         FREQUENCY_SAMPLE = RENDER_FREQ_SAMPLE;
 
         IO.out("Converting source to event list... ");
@@ -440,7 +440,7 @@ new class Synth {
                 if usingCupy {
                     tracks[-1] = tracks[-1].get();
                 }
-                    
+
                 wavfile.write(path.join("tracks", "playbackTrack.wav"), FREQUENCY_SAMPLE, tracks[-1]);
             }
 
@@ -450,7 +450,7 @@ new class Synth {
 
         IO.out(f"Done in {round(time() - mTime, 4)} s.\nMixing tracks... ");
         mTime = time();
-        
+
         new dynamic fullTrack = tracks[0];
 
         for i = 1; i < len(tracks); i++ {
@@ -474,8 +474,8 @@ new class Synth {
                 mixer.set_num_channels(NOTES_PER_CHANNEL * CHANNELS + SOUND_CHANNELS);
 
                 this.channels = [
-                    [mixer.Channel(NOTES_PER_CHANNEL * j + i) 
-                    for i in range(NOTES_PER_CHANNEL)] 
+                    [mixer.Channel(NOTES_PER_CHANNEL * j + i)
+                    for i in range(NOTES_PER_CHANNEL)]
                     for j in range(CHANNELS)
                 ];
 
@@ -513,7 +513,7 @@ main() {
     global SCRIPT_DIR;
 
     if len(argv) == 1 {
-        IO.out("SynthScript v2023.12.15 - thatsOven\n");
+        IO.out("SynthScript v2023.12.15\n");
     } else {
         new bool compile = False;
 
